@@ -1,6 +1,9 @@
-﻿namespace GlowFlow.Core.Interfaces.Services;
+﻿using GlowFlow.Core.Entities;
+using GlowFlow.Core.Interfaces.Base;
 
-public interface IUserService
+namespace GlowFlow.Core.Interfaces.Services;
+
+public interface IUserService : IService<User>
 {
         
 }
