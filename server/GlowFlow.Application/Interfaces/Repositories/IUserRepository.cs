@@ -7,5 +7,5 @@ namespace GlowFlow.Core.Interfaces.Repositories;
 public interface IUserRepository : IRepository<User>
 {
     Task<User> GetByEmailAsync(string email);
-    Task UpdateSkinTypeAsync(Guid id, SkinType skinType);
+    Task<User> UpdateSkinTypeAsync(Guid id, SkinType skinType);
 }
