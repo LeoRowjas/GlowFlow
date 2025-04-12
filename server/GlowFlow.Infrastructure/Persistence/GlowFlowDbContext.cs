@@ -1,11 +1,11 @@
 ﻿using GlowFlow.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GlowFlow.Infrastructure.Common;
+namespace GlowFlow.Infrastructure.Persistence;
 
-public class AppDbContext : DbContext
+public class GlowFlowDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public GlowFlowDbContext(DbContextOptions<GlowFlowDbContext> options) : base(options)
     { }
     
     public DbSet<User> Users { get; set; }
