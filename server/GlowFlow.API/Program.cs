@@ -1,23 +1,27 @@
+using GlowFlow.Application;
+using GlowFlow.Infrastructure;
+using GlowFlow.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<GlowFlowDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
 app.UseHttpsRedirection();
-
-app.UseRouting();
-
 app.MapControllers();
-
 app.Run();

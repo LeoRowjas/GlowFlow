@@ -11,6 +11,8 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+        <PackageReference Include="Npgsql" Version="9.0.3" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.0.0" />
@@ -24,6 +26,11 @@
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GlowFlow.Application\GlowFlow.Application.csproj" />
+      <ProjectReference Include="..\GlowFlow.Infrastructure\GlowFlow.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
