@@ -1,10 +1,9 @@
 ﻿using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
-using GlowFlow.Core.Interfaces.Base;
 using GlowFlow.Core.Interfaces.Repositories;
 using GlowFlow.Core.Interfaces.Services;
 
-namespace GlowFlow.Application.Services;
+namespace GlowFlow.Application.Services.FromModels;
 
 public class UserService(IUserRepository repository) : IUserService
 {
