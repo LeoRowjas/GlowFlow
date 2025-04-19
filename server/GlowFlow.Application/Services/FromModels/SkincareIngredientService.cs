@@ -2,7 +2,7 @@
 using GlowFlow.Core.Interfaces.Repositories;
 using GlowFlow.Core.Interfaces.Services;
 
-namespace GlowFlow.Application.Services;
+namespace GlowFlow.Application.Services.FromModels;
 
 public class SkincareIngredientService(ISkincareIngredientRepository repository) : ISkincareIngredientService
 {

@@ -3,7 +3,7 @@ using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
 using GlowFlow.Core.Interfaces.Services;
 
-namespace GlowFlow.Application.Services;
+namespace GlowFlow.Application.Services.FromModels;
 
 public class SkincareProductService(ISkincareProductRepository repository) : ISkincareProductService
 {
