@@ -7,9 +7,9 @@ namespace GlowFlow.Core.Entities;
 [Index(nameof(Name))]
 public class Article : BaseEntity
 {
-    public string Name { get; set; }
-    public string PreviewContent { get; set; }
-    [Required]
-    public string Link { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string PreviewContent { get; set; } = string.Empty;
+    [Required] 
+    public string Link { get; set; } = string.Empty;
     public DateTime PublishDateTime { get; set; }
 }
