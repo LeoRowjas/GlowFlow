@@ -3,6 +3,7 @@ using System;
 using GlowFlow.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GlowFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GlowFlowDbContext))]
-    partial class GlowFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250424121837_TestAdded")]
+    partial class TestAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

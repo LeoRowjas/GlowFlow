@@ -1,6 +1,7 @@
 ﻿using GlowFlow.Application.Interfaces;
 using GlowFlow.Application.Services;
 using GlowFlow.Application.Services.FromModels;
+using GlowFlow.Core.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using GlowFlow.Core.Interfaces.Services;
 
@@ -15,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<ISkincareProductService, SkincareProductService>();
         services.AddScoped<ISkincareIngredientService, SkincareIngredientService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITestService, TestService>();
 
         return services;
     }

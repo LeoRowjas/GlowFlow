@@ -7,13 +7,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GlowFlow.Infrastructure.Services;
 
-public class JwtService : IJwtTokenService
+public class JwtTokenService : IJwtTokenService
 {
     private readonly string? _secretKey;
     private readonly string? _issuer;
     private readonly string? _audience;
     
-    public JwtService(IConfiguration configuration)
+    public JwtTokenService(IConfiguration configuration)
     {
         _secretKey = configuration["Jwt:SecretKey"];
         _issuer = configuration["Jwt:Issuer"];

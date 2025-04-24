@@ -13,6 +13,7 @@ public class ArticleRepository : IArticleRepository
         _context = context;
     }
 
+    //TODO: привести все методы к nullable чтобы сохранить стиль
     public async Task<Article?> GetByIdAsync(Guid id)
     {
         return await _context.Articles.FindAsync(id);
@@ -25,6 +26,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<Article> AddAsync(Article entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         await _context.Articles.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
@@ -32,6 +34,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<Article> UpdateAsync(Article entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         _context.Articles.Update(entity);
         await _context.SaveChangesAsync();
         return entity;

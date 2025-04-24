@@ -26,6 +26,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> AddAsync(User entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         await _context.Users.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
@@ -33,6 +34,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> UpdateAsync(User entity)
     {   
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         _context.Users.Update(entity);
         await _context.SaveChangesAsync();
         return entity;

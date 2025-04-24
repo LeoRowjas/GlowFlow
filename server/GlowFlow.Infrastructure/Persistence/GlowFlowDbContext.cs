@@ -12,4 +12,6 @@ public class GlowFlowDbContext : DbContext
     public DbSet<SkincareIngredient> SkincareIngredients { get; set; }
     public DbSet<SkincareProduct> SkincareProducts { get; set; }
     public DbSet<Article> Articles { get; set; }
+    public DbSet<TestOption> TestOptions { get; set; }
+    public DbSet<TestQuestion> TestQuestions { get; set; }
 }

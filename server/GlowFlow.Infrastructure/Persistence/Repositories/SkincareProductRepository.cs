@@ -26,6 +26,7 @@ public class SkincareProductRepository : ISkincareProductRepository
 
     public async Task<SkincareProduct> AddAsync(SkincareProduct entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         await _context.SkincareProducts.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
@@ -33,6 +34,7 @@ public class SkincareProductRepository : ISkincareProductRepository
 
     public async Task<SkincareProduct> UpdateAsync(SkincareProduct entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         _context.SkincareProducts.Update(entity);
         await _context.SaveChangesAsync();
 
@@ -65,8 +67,8 @@ public class SkincareProductRepository : ISkincareProductRepository
     public async Task<IEnumerable<SkincareProduct>> GetByIngredientAsync(string ingredientName)
     {
         return await _context.SkincareProducts
-            .Where(a => a.Ingredients.Select(x => x.Name).Contains(ingredientName))
+            .Where(a => a.Ingredients.Any(i => 
+                string.Equals(i.Name, ingredientName, StringComparison.InvariantCultureIgnoreCase)))
             .ToListAsync();
-        //TODO: просто пиздец надо оптимизировать
     }
 }

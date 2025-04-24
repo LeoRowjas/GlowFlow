@@ -5,10 +5,15 @@ using GlowFlow.Core.Interfaces.Services;
 
 namespace GlowFlow.Application.Services.FromModels;
 
-public class UserService(IUserRepository repository) : IUserService
+public class UserService : IUserService
 {
-    private readonly IUserRepository _repository = repository;
-    
+    private readonly IUserRepository _repository;
+
+    public UserService(IUserRepository repository)
+    {
+        _repository = repository;
+    }
+
     public async Task<User?> GetByIdAsync(Guid id)
     {
         return await _repository.GetByIdAsync(id);

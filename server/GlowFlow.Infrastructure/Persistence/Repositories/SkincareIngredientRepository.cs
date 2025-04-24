@@ -25,6 +25,7 @@ public class SkincareIngredientRepository : ISkincareIngredientRepository
 
     public async Task<SkincareIngredient> AddAsync(SkincareIngredient entity)
     { 
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         await _context.SkincareIngredients.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
@@ -33,6 +34,7 @@ public class SkincareIngredientRepository : ISkincareIngredientRepository
 
     public async Task<SkincareIngredient> UpdateAsync(SkincareIngredient entity)
     {
+        if(entity == null) throw new ArgumentNullException(nameof(entity));
         _context.SkincareIngredients.Update(entity);
         await _context.SaveChangesAsync();
         return entity;

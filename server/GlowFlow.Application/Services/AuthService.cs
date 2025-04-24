@@ -42,7 +42,7 @@ public class AuthService : IAuthService
         {
             var existingUser = _userRepository.GetByEmailAsync(request.Email);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new Exception("Email уже используется");
         }
