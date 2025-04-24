@@ -1,6 +1,9 @@
-﻿namespace GlowFlow.Application.Interfaces;
+﻿using GlowFlow.Application.DTO.Auth;
+
+namespace GlowFlow.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task RegisterAsync(string username, string password);
+    Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
+    Task<LoginResponseDto> RegisterAsync(RegisterRequestDto request);
 }

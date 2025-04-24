@@ -1,6 +1,6 @@
-﻿namespace GlowFlow.Application.DTO;
+﻿namespace GlowFlow.Application.DTO.SkinTest;
 
-public class TestAnswerDTO
+public class TestAnswerDto
 {
     public Guid QuestionId { get; set; }
     public Guid OptionId { get; set; }

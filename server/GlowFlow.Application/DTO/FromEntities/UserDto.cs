@@ -1,6 +1,6 @@
 ﻿using GlowFlow.Core.Enums;
 
-namespace GlowFlow.Application.DTO;
+namespace GlowFlow.Application.DTO.FromEntities;
 
 public class UserDto
 {

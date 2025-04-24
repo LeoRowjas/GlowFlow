@@ -1,12 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using GlowFlow.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace GlowFlow.Infrastructure.Services;
 
-public class JwtService
+public class JwtService : IJwtTokenService
 {
     private readonly string? _secretKey;
     private readonly string? _issuer;
@@ -19,15 +20,17 @@ public class JwtService
         _audience = configuration["Jwt:Audience"];
     }
 
-    public string GenerateJwtToken(string username)
+    public string GenerateJwtToken(Guid userId, string email)
     {
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Email, email)
         };
         
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            _secretKey ?? throw new InvalidOperationException("Jwt key not found")));
+        
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
