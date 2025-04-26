@@ -15,12 +15,12 @@ public class SkincareIngredientRepository : ISkincareIngredientRepository
 
     public async Task<SkincareIngredient?> GetByIdAsync(Guid id)
     {
-        return await _context.SkincareIngredients.FindAsync(id);
+        return await _context.SkincareIngredients.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<IEnumerable<SkincareIngredient>> GetAllAsync()
     {
-        return await _context.SkincareIngredients.ToListAsync();
+        return await _context.SkincareIngredients.AsNoTracking().ToListAsync();
     }
 
     public async Task<SkincareIngredient> AddAsync(SkincareIngredient entity)

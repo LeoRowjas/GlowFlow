@@ -16,12 +16,12 @@ public class SkincareProductRepository : ISkincareProductRepository
 
     public async Task<SkincareProduct?> GetByIdAsync(Guid id)
     {
-        return await _context.SkincareProducts.FindAsync(id);
+        return await _context.SkincareProducts.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<IEnumerable<SkincareProduct>> GetAllAsync()
     {
-        return await _context.SkincareProducts.ToListAsync();
+        return await _context.SkincareProducts.AsNoTracking().ToListAsync();
     }
 
     public async Task<SkincareProduct> AddAsync(SkincareProduct entity)

@@ -6,11 +6,11 @@ namespace GlowFlow.Infrastructure.Services;
 
 public class PasswordHashService : IPasswordHasher
 {
-    private PasswordHasher<User> _passwordHasher;
+    private IPasswordHasher<User> _passwordHasher;
 
-    public PasswordHashService()
+    public PasswordHashService(IPasswordHasher<User> passwordHasher)
     {
-        _passwordHasher = new PasswordHasher<User>();
+        _passwordHasher = passwordHasher;
     }
 
     public string HashPassword(User user, string password)

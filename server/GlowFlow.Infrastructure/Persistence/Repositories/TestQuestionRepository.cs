@@ -17,6 +17,7 @@ public class TestQuestionRepository : ITestQuestionRepository
     {
         return await _dbContext.TestQuestions
             .Include(q => q.Options)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

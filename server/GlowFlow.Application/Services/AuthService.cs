@@ -40,7 +40,7 @@ public class AuthService : IAuthService
     {
         try
         {
-            var existingUser = _userRepository.GetByEmailAsync(request.Email);
+            await _userRepository.GetByEmailAsync(request.Email);
         }
         catch (Exception)
         {

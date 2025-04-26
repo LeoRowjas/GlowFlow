@@ -1,7 +1,6 @@
 ﻿using GlowFlow.Application.Interfaces;
 using GlowFlow.Application.Services;
 using GlowFlow.Application.Services.FromModels;
-using GlowFlow.Core.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using GlowFlow.Core.Interfaces.Services;
 

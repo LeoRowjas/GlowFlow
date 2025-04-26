@@ -16,12 +16,12 @@ public class ArticleRepository : IArticleRepository
     //TODO: привести все методы к nullable чтобы сохранить стиль
     public async Task<Article?> GetByIdAsync(Guid id)
     {
-        return await _context.Articles.FindAsync(id);
+        return await _context.Articles.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
     }
 
     public async Task<IEnumerable<Article>> GetAllAsync()
     {
-        return await _context.Articles.ToListAsync();
+        return await _context.Articles.AsNoTracking().ToListAsync();
     }
 
     public async Task<Article> AddAsync(Article entity)

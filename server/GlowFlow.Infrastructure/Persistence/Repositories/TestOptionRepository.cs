@@ -1,5 +1,6 @@
 ﻿using GlowFlow.Core.Entities;
 using GlowFlow.Core.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace GlowFlow.Infrastructure.Persistence.Repositories;
 
@@ -14,7 +15,7 @@ public class TestOptionRepository : ITestOptionRepository
 
     public async Task<TestOption> GetByIdAsync(Guid id)
     {
-        return await _dbContext.TestOptions.FindAsync(id) ?? throw new Exception();
+        return await _dbContext.TestOptions.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id) ?? throw new Exception();
         //TODO: что-то придумать с этой хуйней ненадежной
     }
 }
