@@ -50,15 +50,14 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public async Task<User> GetByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email)
     {
         var normalized = email.Trim().ToLower();
         return await _context.Users
-            .FirstOrDefaultAsync(x => x.Email.Equals(normalized, StringComparison.CurrentCultureIgnoreCase)) 
-               ?? throw new Exception(); //TODO: прикрутить нот фаунд эксепшн
+            .FirstOrDefaultAsync(x => x.Email.Equals(normalized)) ?? null; //TODO: прикрутить нот фаунд эксепшн
     }
 
-    public async Task<User> UpdateSkinTypeAsync(Guid id, SkinType skinType)
+    public async Task<User?> UpdateSkinTypeAsync(Guid id, SkinType skinType)
     {
         var user = await _context.Users.FindAsync(id);
         if (user == null) throw new Exception(); //TODO: прикрутить нот фаунд эксепшн

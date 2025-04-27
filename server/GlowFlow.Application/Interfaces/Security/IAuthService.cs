@@ -1,6 +1,6 @@
 ﻿using GlowFlow.Application.DTO.Auth;
 
-namespace GlowFlow.Application.Interfaces;
+namespace GlowFlow.Application.Interfaces.Security;
 
 public interface IAuthService
 {

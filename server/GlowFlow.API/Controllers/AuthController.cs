@@ -1,6 +1,6 @@
 ﻿using GlowFlow.Application.DTO.Auth;
-using GlowFlow.Application.Interfaces;
-using GlowFlow.Core.Interfaces.Repositories;
+using GlowFlow.Application.Interfaces.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlowFlow.Controllers;
@@ -16,6 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
     
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
     {
@@ -23,6 +24,7 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequestDto registrationRequest)
     {

@@ -1,4 +1,4 @@
-﻿using GlowFlow.Application.Interfaces;
+﻿using GlowFlow.Application.Interfaces.Security;
 using GlowFlow.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 

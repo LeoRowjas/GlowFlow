@@ -1,7 +1,7 @@
-﻿using GlowFlow.Core.Entities;
+﻿using GlowFlow.Application.Interfaces.Services;
+using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
-using GlowFlow.Core.Interfaces.Services;
 
 namespace GlowFlow.Application.Services.FromModels;
 

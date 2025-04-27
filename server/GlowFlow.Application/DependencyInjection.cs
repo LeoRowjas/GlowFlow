@@ -1,8 +1,9 @@
 ﻿using GlowFlow.Application.Interfaces;
+using GlowFlow.Application.Interfaces.Security;
+using GlowFlow.Application.Interfaces.Services;
 using GlowFlow.Application.Services;
 using GlowFlow.Application.Services.FromModels;
 using Microsoft.Extensions.DependencyInjection;
-using GlowFlow.Core.Interfaces.Services;
 
 namespace GlowFlow.Application;
 

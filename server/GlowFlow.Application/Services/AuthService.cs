@@ -1,5 +1,5 @@
 ﻿using GlowFlow.Application.DTO.Auth;
-using GlowFlow.Application.Interfaces;
+using GlowFlow.Application.Interfaces.Security;
 using GlowFlow.Core.Entities;
 using GlowFlow.Core.Interfaces.Repositories;
 
@@ -38,14 +38,12 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponseDto> RegisterAsync(RegisterRequestDto request)
     {
-        try
+        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        if (existingUser != null)
         {
-            await _userRepository.GetByEmailAsync(request.Email);
+            throw new Exception();
         }
-        catch (Exception)
-        {
-            throw new Exception("Email уже используется");
-        }
+        
         var user = new User()
         {
             Email = request.Email,
@@ -59,9 +57,9 @@ public class AuthService : IAuthService
 
         return new LoginResponseDto()
         {
+            UserId = user.Id,
             Email = user.Email,
-            Token = token,
-            UserId = user.Id
+            Token = token
         };
     }
 }

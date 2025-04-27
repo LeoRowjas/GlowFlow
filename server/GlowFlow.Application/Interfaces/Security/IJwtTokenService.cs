@@ -1,4 +1,4 @@
-﻿namespace GlowFlow.Application.Interfaces;
+﻿namespace GlowFlow.Application.Interfaces.Security;
 
 public interface IJwtTokenService
 {

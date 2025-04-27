@@ -2,7 +2,7 @@
 using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Base;
 
-namespace GlowFlow.Core.Interfaces.Services;
+namespace GlowFlow.Application.Interfaces.Services;
 
 public interface IUserService : IService<User>
 {
