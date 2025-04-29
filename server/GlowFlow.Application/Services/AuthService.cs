@@ -32,6 +32,7 @@ public class AuthService : IAuthService
         {
             Email = user.Email,
             Token = token,
+            UserId = user.Id
         };
         return response;
     }

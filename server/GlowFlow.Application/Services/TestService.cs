@@ -10,17 +10,15 @@ public class TestService : ITestService
 {
     private readonly ITestOptionRepository _optionRepository;
     private readonly ITestQuestionRepository _questionRepository;
-    private readonly IUserRepository _userRepository;
 
     public TestService(ITestOptionRepository optionRepository, 
         ITestQuestionRepository questionRepository, IUserRepository userRepository)
     {
         _optionRepository = optionRepository;
         _questionRepository = questionRepository;
-        _userRepository = userRepository;
     }
     
-    public Task<List<TestQuestion>> GetTestQuestionsAsync()
+    public Task<List<TestQuestion>> GetTestQuestionsWithOptionsAsync()
     {
         return _questionRepository.GetAllQuestionsWithOptionsAsync();
     }
@@ -39,22 +37,5 @@ public class TestService : ITestService
         }
 
         return skinTypeCounts.OrderByDescending(kv => kv.Value).First().Key;
-    }
-
-    public async Task<UserDto> UpdateUserSkinType(Guid userId, SkinType skinType)
-    {
-        //TODO: может вылететь ошибка внутри метода, решить вопрос с эксепшнами
-        var user = await _userRepository.UpdateSkinTypeAsync(userId, skinType);
-        
-        var dto = new UserDto()
-        {
-            Id = user.Id,
-            Email = user.Email,
-            Name = user.Name,
-            Age = user.Age,
-            SkinType = skinType
-        };
-        
-        return dto;
     }
 }

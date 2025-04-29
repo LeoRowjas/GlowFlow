@@ -6,7 +6,6 @@ namespace GlowFlow.Application.Interfaces;
 
 public interface ITestService
 {
-    Task<List<TestQuestion>> GetTestQuestionsAsync();
+    Task<List<TestQuestion>> GetTestQuestionsWithOptionsAsync();
     Task<SkinType> GetSkinTypeFromAnswersAsync(List<Guid> answers);
-    Task<UserDto> UpdateUserSkinType(Guid userId, SkinType skinType);
 }
