@@ -1,4 +1,5 @@
 ﻿using GlowFlow.Core.Entities;
+using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,5 +31,13 @@ public class SkincareProductController : ControllerBase
     {
         var product = await _skincareProductRepository.GetByIdAsync(Guid.Parse(id));
         return Ok(product);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("from-skin-type")]
+    public async Task<IActionResult> GetSkincareProductBySkinType([FromQuery] SkinType skinType)
+    {
+        var products = await _skincareProductRepository.GetBySkinTypeAsync(skinType);
+        return Ok(products);
     }
 }
