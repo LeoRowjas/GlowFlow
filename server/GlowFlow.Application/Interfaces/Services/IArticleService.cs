@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using GlowFlow.Core.Entities;
+﻿using GlowFlow.Core.Entities;
 using GlowFlow.Core.Interfaces.Base;
 
-namespace GlowFlow.Core.Interfaces.Services;
+namespace GlowFlow.Application.Interfaces.Services;
 
 public interface IArticleService : IService<Article>
 {

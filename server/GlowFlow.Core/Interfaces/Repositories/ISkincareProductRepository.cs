@@ -8,4 +8,5 @@ public interface ISkincareProductRepository : IRepository<SkincareProduct>
 {
     Task<IEnumerable<SkincareProduct>> GetBySkinTypeAsync(SkinType skinType);
     Task<IEnumerable<SkincareProduct>> GetByNameAsync(string name);
+    Task<IEnumerable<SkincareProduct>> GetByIngredientAsync(string ingredientName);
 }
