@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthContext';
 
 // Моковые данные статей
 const mockArticles = [
@@ -51,66 +52,39 @@ const mockArticles = [
     tags: ["Гиалуроновая кислота", "Увлажнение"],
     img: "https://via.placeholder.com/600x400?text=600+x+400",
   },
-  // ... можно добавить больше статей для теста скролла
 ];
 
-const allTags = Array.from(
-  new Set(mockArticles.flatMap((a) => a.tags))
-);
+const allTags = Array.from(new Set(mockArticles.flatMap((a) => a.tags)));
 
-const PAGE_SIZE = 3;
+const mockRecommended = [
+  {
+    id: 101,
+    title: "Лучшие средства для комбинированной кожи",
+    preview: "Подборка топовых средств по мнению дерматологов.",
+  },
+  {
+    id: 102,
+    title: "Как выбрать SPF на лето?",
+    preview: "Советы по выбору солнцезащитных средств для разных типов кожи.",
+  },
+  {
+    id: 103,
+    title: "Анти-эйдж: что реально работает?",
+    preview: "Обзор ингредиентов с доказанной эффективностью.",
+  },
+];
 
 export default function Articles() {
-  const [articles, setArticles] = useState(mockArticles.slice(0, PAGE_SIZE));
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
   const [selectedTags, setSelectedTags] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const loaderRef = useRef(null);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   // Фильтрация статей по тегам
   const filteredArticles = selectedTags.length
     ? mockArticles.filter((a) => selectedTags.every((tag) => a.tags.includes(tag)))
     : mockArticles;
-
-  useEffect(() => {
-    setArticles(filteredArticles.slice(0, PAGE_SIZE));
-    setPage(1);
-  }, [selectedTags]);
-
-  useEffect(() => {
-    if (articles.length >= filteredArticles.length) return;
-    const observer = new window.IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          setLoading(true);
-          setTimeout(() => {
-            setArticles((prev) => {
-              const next = filteredArticles.slice(0, (page + 1) * PAGE_SIZE);
-              return next;
-            });
-            setPage((prev) => prev + 1);
-            setLoading(false);
-          }, 700);
-        }
-      },
-      { threshold: 1 }
-    );
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-    return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
-    };
-  }, [loading, articles.length, page, filteredArticles]);
-
-  // Теги для фильтра
-  const toggleTag = (tag) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
 
   // Закрытие dropdown при клике вне
   useEffect(() => {
@@ -123,6 +97,12 @@ export default function Articles() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showDropdown]);
+
+  const toggleTag = (tag) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#F8F6FF] py-8 px-4">
@@ -163,47 +143,67 @@ export default function Articles() {
             </div>
           </div>
           <div className="flex flex-col gap-6">
-            {articles.map((article) => (
-              <div
-                key={article.id}
-                className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4"
-              >
-                <img
-                  src={article.img}
-                  alt={article.title}
-                  className="rounded-xl object-cover w-full h-[240px] bg-gray-200"
-                />
+            {filteredArticles.length === 0 && (
+              <div className="text-gray-400 text-center py-12">Нет статей</div>
+            )}
+            {filteredArticles.map((article) => (
+              <div key={article.id} className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
+                {article.img && (
+                  <img
+                    src={article.img}
+                    alt={article.title}
+                    className="rounded-xl object-cover w-full h-[240px] bg-gray-200"
+                  />
+                )}
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold mb-1">{article.title}</h2>
-                    <span className="text-gray-400 text-sm whitespace-nowrap">{article.date}</span>
+                    {article.date && <span className="text-gray-400 text-sm whitespace-nowrap">{article.date}</span>}
                   </div>
                   <div className="text-gray-600 text-base mb-2">{article.description}</div>
-                  <div className="flex flex-wrap gap-2">
-                    {article.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {Array.isArray(article.tags) && (
+                    <div className="flex flex-wrap gap-2">
+                      {article.tags.map((tag) => (
+                        <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
-            <div ref={loaderRef} className="w-full flex justify-center py-4">
-              {loading && <span className="text-violet-500">Загрузка...</span>}
-            </div>
           </div>
         </div>
         {/* Боковой блок */}
         <div className="w-[320px] flex-shrink-0">
           <div className="bg-white rounded-2xl shadow p-6 mb-6">
-            <h3 className="text-lg font-bold mb-2">Рекомендуемые статьи</h3>
-            <div className="text-gray-500 text-base mb-2">
-              Чтобы получить персонально подобранные статьи вам нужно{' '}
-              <Link to="/login" className="text-violet-600 hover:underline font-semibold">войти в аккаунт</Link>.
+            <h3 className="text-lg font-bold mb-4">Рекомендуемые статьи</h3>
+            <div className="space-y-4">
+              {!isAuthenticated ? (
+                <div className="text-gray-500 text-base">
+                  Чтобы получить персонально подобранные статьи нужно{' '}
+                  <button
+                    className="text-violet-700 font-semibold hover:underline ml-1"
+                    onClick={() => navigate('/login')}
+                  >
+                    войти в аккаунт
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {mockRecommended.length === 0 && <div className="text-gray-400">Нет рекомендаций</div>}
+                  {mockRecommended.map(article => (
+                    <div
+                      key={article.id}
+                      className="block hover:bg-violet-50 p-3 rounded-xl transition cursor-pointer"
+                    >
+                      <div className="font-semibold text-base mb-1">{article.title}</div>
+                      <div className="text-gray-500 text-sm">{article.preview}</div>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>
