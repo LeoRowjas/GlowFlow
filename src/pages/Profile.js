@@ -1,10 +1,20 @@
 import React from "react";
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (!user) return null;
+
+  // Компонент-заглушка для незаполненных данных
+  const TestLink = () => (
+    <span>
+      Узнаем из{' '}
+      <a href="/test" className="text-violet-700 underline hover:text-violet-900">теста</a>!
+    </span>
+  );
 
   return (
     <div className="min-h-screen bg-gray-100 py-0 px-0">
@@ -22,7 +32,9 @@ export default function Profile() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Тип кожи:</span>
-                <span className="font-semibold">{user.skinType}</span>
+                <span className="font-semibold">
+                  {user.skinType ? user.skinType : <TestLink />}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Эл. почта:</span>
@@ -40,50 +52,67 @@ export default function Profile() {
             <div className="mb-3">
               <span className="font-semibold">Основные проблемы: </span>
               <div className="flex flex-wrap gap-3 mt-3">
-                {user.skinAnalysis?.problems?.map((problem) => (
-                  <span
-                    key={problem}
-                    className="inline-block px-6 py-2 rounded-full text-lg font-medium"
-                    style={{ background: "#FFFFFF", color: "#2563eb" }}
-                  >
-                    {problem}
-                  </span>
-                ))}
+                {user.skinAnalysis?.problems && user.skinAnalysis.problems.length > 0 ? (
+                  user.skinAnalysis.problems.map((problem) => (
+                    <span
+                      key={problem}
+                      className="inline-block px-6 py-2 rounded-full text-lg font-medium"
+                      style={{ background: "#FFFFFF", color: "#2563eb" }}
+                    >
+                      {problem}
+                    </span>
+                  ))
+                ) : (
+                  <TestLink />
+                )}
               </div>
             </div>
             <div>
               <span className="font-semibold">Необходимый уход: </span>
               <div className="flex flex-wrap gap-3 mt-3">
-                {user.skinAnalysis?.care?.map((care) => (
-                  <span
-                    key={care}
-                    className="inline-block px-6 py-2 rounded-full text-lg font-medium"
-                    style={{ background: "#FFFFFF", color: "#2563eb" }}
-                  >
-                    {care}
-                  </span>
-                ))}
+                {user.skinAnalysis?.care && user.skinAnalysis.care.length > 0 ? (
+                  user.skinAnalysis.care.map((care) => (
+                    <span
+                      key={care}
+                      className="inline-block px-6 py-2 rounded-full text-lg font-medium"
+                      style={{ background: "#FFFFFF", color: "#2563eb" }}
+                    >
+                      {care}
+                    </span>
+                  ))
+                ) : (
+                  <TestLink />
+                )}
               </div>
             </div>
           </div>
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold mb-6">Персональные рекомендации</h2>
             <div className="grid grid-cols-2 gap-9">
-              {user.recommendations?.map((rec, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gray-100 rounded-xl shadow p-6 flex flex-col transition hover:shadow-lg hover:bg-gray-200 cursor-pointer"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <img
-                    src={rec.img}
-                    alt={rec.title}
-                    className="rounded-lg mb-3 object-cover w-full h-40"
-                  />
-                  <div className="font-bold text-lg mb-2">{rec.title}</div>
-                  <div className="text-gray-600 text-base">{rec.description}</div>
-                </div>
-              ))}
+              {user.recommendations && user.recommendations.length > 0 ? (
+                user.recommendations.map((rec, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-gray-100 rounded-xl shadow p-6 flex flex-col transition hover:shadow-lg hover:bg-gray-200 cursor-pointer"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={() => {
+                      // Если есть id, используем его, иначе формируем slug из title
+                      const slug = rec.id ? rec.id : encodeURIComponent(rec.title.toLowerCase().replace(/\s+/g, '-'));
+                      navigate(`/product/${slug}`);
+                    }}
+                  >
+                    <img
+                      src={rec.img}
+                      alt={rec.title}
+                      className="rounded-lg mb-3 object-cover w-full h-40"
+                    />
+                    <div className="font-bold text-lg mb-2">{rec.title}</div>
+                    <div className="text-gray-600 text-base">{rec.description}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-lg text-gray-600"><TestLink /></div>
+              )}
             </div>
           </div>
         </div>

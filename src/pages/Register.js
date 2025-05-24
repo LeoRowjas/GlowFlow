@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await register(username, name, email, password, age);
+      navigate('/login');
+    } catch (err) {
+      setError(err.message || "Ошибка регистрации");
+    }
+  };
+
   return (
     <div className="h-screen w-full bg-[#F8F6FF] overflow-hidden">
       <div className="flex flex-col items-center mt-2">
@@ -13,7 +33,7 @@ export default function Register() {
       </div>
       <div className="bg-white rounded-2xl shadow-sm px-14 py-12 w-full max-w-lg mx-auto flex flex-col items-center">
         <h2 className="text-3xl font-bold mb-8 text-center">Регистрация</h2>
-        <form className="w-full flex flex-col gap-6">
+        <form className="w-full flex flex-col gap-6" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-2">
             <label htmlFor="username" className="text-base font-medium text-gray-700">Имя пользователя</label>
             <input
@@ -22,6 +42,9 @@ export default function Register() {
               placeholder="Введите имя пользователя"
               className="px-5 py-4 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-200 text-lg"
               autoComplete="username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -32,6 +55,9 @@ export default function Register() {
               placeholder="Введите ваше имя"
               className="px-5 py-4 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-200 text-lg"
               autoComplete="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -42,6 +68,9 @@ export default function Register() {
               placeholder="your@email.com"
               className="px-5 py-4 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-200 text-lg"
               autoComplete="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -52,8 +81,26 @@ export default function Register() {
               placeholder="Введите пароль"
               className="px-5 py-4 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-200 text-lg"
               autoComplete="new-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="age" className="text-base font-medium text-gray-700">Возраст</label>
+            <input
+              id="age"
+              type="number"
+              min="1"
+              max="120"
+              placeholder="Введите ваш возраст"
+              className="px-5 py-4 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-200 text-lg"
+              value={age}
+              onChange={e => setAge(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="text-red-500 text-center text-base">{error}</div>}
           <button
             type="submit"
             className="mt-2 w-full py-4 rounded-lg bg-violet-700 text-white font-bold text-lg hover:bg-violet-800 transition"

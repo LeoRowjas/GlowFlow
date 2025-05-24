@@ -2,57 +2,24 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
-// Моковые данные для профиля авторизованного пользователя
-const mockProfile = {
-  id: 'mock-user-id',
-  name: 'Alexandra Smith',
-  age: 28,
-  email: 'example@gmail.com',
-  skinType: 'Комбинированная',
-  skinAnalysis: {
-    problems: ['Обезвоженность', 'Расширенные поры', 'Неравномерный тон'],
-    care: ['Глубокое увлажнение', 'Защита от солнца', 'Мягкое отшелушивание'],
-  },
-  recommendations: [
-    {
-      title: 'Очищающий гель CeraVe',
-      description: 'Нежное очищение для комбинированной кожи',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-    {
-      title: 'Увлажняющий крем La Roche-Posay',
-      description: 'Лёгкий крем с гиалуроновой кислотой',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-    {
-      title: 'Солнцезащитный крем Beauty of Joseon',
-      description: 'SPF 50+ PA++++',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-    {
-      title: 'Ночная маска COSRX',
-      description: 'Восстанавливающая маска с центеллой',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-    {
-      title: 'Тонер с BHA Paula\'s Choice',
-      description: 'Мягкое отшелушивание и сужение пор',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-    {
-      title: 'Сыворотка The Ordinary',
-      description: 'Ниацинамид 10% + Цинк 1%',
-      img: 'https://via.placeholder.com/366x160?text=366+x+160',
-    },
-  ],
-};
+// Ключ для хранения пользователей в localStorage
+const USERS_KEY = 'users';
+
+function getUsersFromStorage() {
+  const users = localStorage.getItem(USERS_KEY);
+  return users ? JSON.parse(users) : [];
+}
+
+function saveUsersToStorage(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Проверяем наличие токена в localStorage при загрузке
+    // Проверяем наличие токена и пользователя в localStorage при загрузке
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     if (token && userData) {
@@ -61,19 +28,38 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // Моковая авторизация: всегда успешно, любые данные
+  // Авторизация по email и паролю
   const login = async (email, password) => {
+    const users = getUsersFromStorage();
+    const found = users.find(u => u.email === email && u.password === password);
+    if (!found) throw new Error('Неверный email или пароль');
     localStorage.setItem('token', 'mock-token');
-    localStorage.setItem('user', JSON.stringify(mockProfile));
-    setUser(mockProfile);
-    return mockProfile;
+    localStorage.setItem('user', JSON.stringify(found));
+    setUser(found);
+    return found;
   };
 
-  const register = async (username, name, email, password) => {
-    localStorage.setItem('token', 'mock-token');
-    localStorage.setItem('user', JSON.stringify(mockProfile));
-    setUser(mockProfile);
-    return mockProfile;
+  // Регистрация нового пользователя
+  const register = async (username, name, email, password, age) => {
+    const users = getUsersFromStorage();
+    if (users.some(u => u.email === email)) {
+      throw new Error('Пользователь с таким email уже существует');
+    }
+    const newUser = {
+      id: Date.now().toString(),
+      username,
+      name,
+      email,
+      password,
+      age,
+      skinType: '',
+      skinAnalysis: { problems: [], care: [] },
+      recommendations: [],
+    };
+    users.push(newUser);
+    saveUsersToStorage(users);
+    // Не авторизуем сразу, просто возвращаем для редиректа на логин
+    return newUser;
   };
 
   const logout = () => {
@@ -88,7 +74,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    setUser,
   };
 
   return (

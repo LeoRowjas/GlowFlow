@@ -41,6 +41,7 @@ export default function Login() {
               autoComplete="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -53,6 +54,7 @@ export default function Login() {
               autoComplete="current-password"
               value={password}
               onChange={e => setPassword(e.target.value)}
+              required
             />
           </div>
           {error && <div className="text-red-500 text-center text-base">{error}</div>}
