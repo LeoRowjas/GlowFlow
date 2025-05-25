@@ -1,5 +1,4 @@
-﻿using GlowFlow.Application.DTO.FromEntities;
-using GlowFlow.Application.Interfaces;
+﻿using GlowFlow.Application.Interfaces;
 using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
@@ -12,7 +11,7 @@ public class TestService : ITestService
     private readonly ITestQuestionRepository _questionRepository;
 
     public TestService(ITestOptionRepository optionRepository, 
-        ITestQuestionRepository questionRepository, IUserRepository userRepository)
+        ITestQuestionRepository questionRepository)
     {
         _optionRepository = optionRepository;
         _questionRepository = questionRepository;

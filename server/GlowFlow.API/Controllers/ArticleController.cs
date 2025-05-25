@@ -25,7 +25,7 @@ public class ArticleController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    public async Task<IActionResult> GetById([FromRoute]string id)
     {
         var guid = Guid.Parse(id);
         var article = await _articleService.GetByIdAsync(guid);

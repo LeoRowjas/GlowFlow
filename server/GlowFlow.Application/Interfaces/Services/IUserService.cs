@@ -8,4 +8,6 @@ public interface IUserService : IService<User>
 {
     Task<User> GetByEmailAsync(string email);
     Task<User> UpdateSkinTypeAsync(Guid id, SkinType skinType);
+    Task<string> UploadAvatarAsync(Guid id, Stream stream, string fileName, string contentType);
+    Task DeleteAvatarAsync(string filename);
 }

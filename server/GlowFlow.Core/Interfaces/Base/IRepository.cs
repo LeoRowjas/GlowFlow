@@ -1,4 +1,8 @@
-﻿namespace GlowFlow.Core.Interfaces.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace GlowFlow.Core.Interfaces.Base;
 
 public interface IRepository<T> where T : class
 {

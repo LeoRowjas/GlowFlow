@@ -1,4 +1,5 @@
-﻿using GlowFlow.Core.Entities.Base;
+﻿using System.Collections.Generic;
+using GlowFlow.Core.Entities.Base;
 using GlowFlow.Core.Enums;
 
 namespace GlowFlow.Core.Entities;

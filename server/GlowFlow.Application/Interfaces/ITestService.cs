@@ -1,5 +1,4 @@
-﻿using GlowFlow.Application.DTO.FromEntities;
-using GlowFlow.Core.Entities;
+﻿using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
 
 namespace GlowFlow.Application.Interfaces;
