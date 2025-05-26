@@ -1,4 +1,5 @@
-﻿using GlowFlow.Application.Interfaces.Services;
+﻿using System.Security.Claims;
+using GlowFlow.Application.Interfaces.Services;
 using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
 using GlowFlow.DTO;
@@ -79,7 +80,7 @@ public class UserController : ControllerBase
         if(file == null || file.Length == 0)
             return BadRequest("File is empty");
 
-        var userId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null)
             return Unauthorized();
         
