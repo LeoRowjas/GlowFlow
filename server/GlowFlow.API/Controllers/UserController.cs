@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -19,13 +19,15 @@ public class UserController : ControllerBase
         _userService = userService;
     }
     
-    [HttpGet("all")]
+    [AllowAnonymous]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllAsync();
         return Ok(users);
     }
     
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById([FromRoute]string id)
     {
@@ -34,7 +36,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("update/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser([FromRoute]string id, [FromBody]User user)
     {
         var guid = Guid.Parse(id);
@@ -49,8 +51,8 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpPatch("update/{id}/skin-type")]
-    public async Task<IActionResult> UpdateUserSkinType([FromRoute]string id, [FromQuery]SkinType skinType)
+    [HttpPatch("{id}/skin-type")]
+    public async Task<IActionResult> UpdateUserSkinType([FromRoute]string id, [FromBody]SkinType skinType)
     {
         var guid = Guid.Parse(id);
         var idUser  = await _userService.GetByIdAsync(guid);
@@ -61,7 +63,7 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser([FromRoute]string id)
     {
         var guid = Guid.Parse(id);
@@ -71,27 +73,27 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("avatar/upload")]
+    [HttpPost("{id}/avatar")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
+    public async Task<IActionResult> UploadAvatar([FromRoute ]string id, [FromForm] UploadAvatarRequest request)
     {
         var file = request.File;
         
         if(file == null || file.Length == 0)
             return BadRequest("File is empty");
 
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = await _userService.GetByIdAsync(Guid.Parse(id));
         if (userId == null)
-            return Unauthorized();
+            return BadRequest();
         
         await using var stream = file.OpenReadStream();
-        var avatar = await _userService.UploadAvatarAsync(Guid.Parse(userId), stream, file.FileName, file.ContentType);
+        var avatar = await _userService.UploadAvatarAsync(Guid.Parse(id), stream, file.FileName, file.ContentType);
         
         return Ok(avatar);
     }
 
     [Authorize]
-    [HttpDelete("avatar/delete")]
+    [HttpDelete("{id}/avatar")]
     public async Task<IActionResult> DeleteAvatar([FromQuery] string fileName)
     {
         await _userService.DeleteAvatarAsync(fileName);

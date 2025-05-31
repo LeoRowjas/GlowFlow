@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/products")]
 public class SkincareProductController : ControllerBase
 {
     private readonly ISkincareProductRepository _skincareProductRepository;
@@ -17,7 +17,7 @@ public class SkincareProductController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("all")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllSkincareProducts()
     {
         var products = await _skincareProductRepository.GetAllAsync();
@@ -33,7 +33,7 @@ public class SkincareProductController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("from-skin-type")]
+    [HttpGet("by-skin-type")]
     public async Task<IActionResult> GetSkincareProductBySkinType([FromQuery] SkinType skinType)
     {
         var products = await _skincareProductRepository.GetBySkinTypeAsync(skinType);

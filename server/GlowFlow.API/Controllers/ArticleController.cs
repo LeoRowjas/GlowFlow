@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/articles")]
 public class ArticleController : ControllerBase
 {
     private readonly IArticleService _articleService;
@@ -16,7 +16,7 @@ public class ArticleController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("all")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAll()
     {
         var articles = await _articleService.GetAllAsync();

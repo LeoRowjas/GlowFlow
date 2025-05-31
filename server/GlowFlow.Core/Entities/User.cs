@@ -16,4 +16,5 @@ public class User : BaseEntity
     public string PasswordHash { get; set; } = string.Empty;
     public SkinType SkinType { get; set; }
     public string? AvatarUrl { get; set; } = string.Empty;
+    public UserRole Role { get; set; }
 }

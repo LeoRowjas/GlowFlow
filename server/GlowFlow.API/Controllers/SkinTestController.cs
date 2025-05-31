@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/skin-test")]
 public class SkinTestController : ControllerBase
 {
     private readonly ITestService _testService;
