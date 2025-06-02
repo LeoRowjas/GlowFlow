@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using GlowFlow.Application.DTO.FromEntities;
+using GlowFlow.Application.Exceptions;
 using GlowFlow.Application.Interfaces.Services;
 using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
@@ -29,74 +31,73 @@ public class UserController : ControllerBase
     
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserById([FromRoute]string id)
+    public async Task<IActionResult> GetUserById([FromRoute]Guid id)
     {
-        var user = await _userService.GetByIdAsync(Guid.Parse(id));
+        var user = await _userService.GetByIdAsync(id);
         return Ok(user);
     }
 
     [Authorize]
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser([FromRoute]string id, [FromBody]User user)
+    [HttpPut("me")]
+    public async Task<IActionResult> UpdateUser([FromBody]UpdateUserDto user)
     {
-        var guid = Guid.Parse(id);
-        var idUser  = await _userService.GetByIdAsync(guid);
-        if (idUser == null || idUser.Id != user.Id)
-        {
-            return BadRequest();
-        }
-        
-        await _userService.UpdateAsync(user);
+        var idUser  = GetCurrentUserId();
+        await _userService.UpdateAsync(idUser, user);
         return Ok(user);
     }
 
     [Authorize]
-    [HttpPatch("{id}/skin-type")]
-    public async Task<IActionResult> UpdateUserSkinType([FromRoute]string id, [FromBody]SkinType skinType)
+    [HttpPatch("skin-type")]
+    public async Task<IActionResult> UpdateUserSkinType([FromBody]SkinType skinType)
     {
-        var guid = Guid.Parse(id);
-        var idUser  = await _userService.GetByIdAsync(guid);
-        if (idUser == null) return BadRequest();
-        
-        await _userService.UpdateSkinTypeAsync(guid, skinType);
+        var idUser  = GetCurrentUserId();
+        await _userService.UpdateSkinTypeAsync(idUser, skinType);
         return Ok(idUser);
     }
 
     [Authorize]
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser([FromRoute]string id)
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteUser()
     {
-        var guid = Guid.Parse(id);
-        var user = await _userService.GetByIdAsync(guid);
-        await _userService.DeleteAsync(guid);
-        return Ok(user);
+        var idUser  = GetCurrentUserId();
+        await _userService.DeleteAsync(idUser);
+        return Ok("User deleted");
     }
 
     [Authorize]
-    [HttpPost("{id}/avatar")]
+    [HttpPost("me/avatar")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadAvatar([FromRoute ]string id, [FromForm] UploadAvatarRequest request)
+    public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarRequest request)
     {
         var file = request.File;
-        
-        if(file == null || file.Length == 0)
-            return BadRequest("File is empty");
 
-        var userId = await _userService.GetByIdAsync(Guid.Parse(id));
-        if (userId == null)
-            return BadRequest();
+        if (file.Length == 0)
+            throw new ValidationException("Файл отсутствует или пустой");
+
+        var userId = GetCurrentUserId();
         
         await using var stream = file.OpenReadStream();
-        var avatar = await _userService.UploadAvatarAsync(Guid.Parse(id), stream, file.FileName, file.ContentType);
+        var avatar = await _userService.UploadAvatarAsync(userId, stream, file.FileName, file.ContentType);
         
         return Ok(avatar);
     }
 
     [Authorize]
-    [HttpDelete("{id}/avatar")]
+    [HttpDelete("me/avatar")]
     public async Task<IActionResult> DeleteAvatar([FromQuery] string fileName)
     {
-        await _userService.DeleteAvatarAsync(fileName);
+        var userId = GetCurrentUserId();
+        await _userService.DeleteAvatarAsync(userId, fileName);
         return Ok();
+    }
+    
+    
+    private Guid GetCurrentUserId()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if(userId == null)
+            throw new UnauthorizedAccessException();
+        
+        return Guid.Parse(userId);
     }
 }

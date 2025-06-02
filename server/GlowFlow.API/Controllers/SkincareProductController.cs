@@ -26,9 +26,9 @@ public class SkincareProductController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetSkincareProductById([FromRoute] string id)
+    public async Task<IActionResult> GetSkincareProductById([FromRoute] Guid id)
     {
-        var product = await _skincareProductRepository.GetByIdAsync(Guid.Parse(id));
+        var product = await _skincareProductRepository.GetByIdAsync(id);
         return Ok(product);
     }
 

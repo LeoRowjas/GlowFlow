@@ -3,6 +3,7 @@ using GlowFlow.Infrastructure;
 using GlowFlow.Infrastructure.Persistence;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GlowFlow.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -71,6 +72,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

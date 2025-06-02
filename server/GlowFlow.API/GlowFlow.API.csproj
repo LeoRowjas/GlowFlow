@@ -30,10 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Middleware\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GlowFlow.Application\GlowFlow.Application.csproj" />
       <ProjectReference Include="..\GlowFlow.Infrastructure\GlowFlow.Infrastructure.csproj" />
     </ItemGroup>
