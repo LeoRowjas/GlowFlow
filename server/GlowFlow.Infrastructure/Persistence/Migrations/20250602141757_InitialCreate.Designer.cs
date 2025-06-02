@@ -9,18 +9,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GlowFlow.Infrastructure.Persistence.Migrations
+namespace GlowFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(GlowFlowDbContext))]
-    [Migration("20250424121837_TestAdded")]
-    partial class TestAdded
+    [Migration("20250602141757_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -29,7 +29,12 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("ImageLink")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Link")
                         .IsRequired()
@@ -57,7 +62,8 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Effect")
                         .IsRequired()
@@ -67,12 +73,7 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SkincareProductId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SkincareProductId");
 
                     b.ToTable("SkincareIngredients");
                 });
@@ -81,9 +82,14 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageLink")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -91,7 +97,7 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<int[]>("SuitableSkinTypes")
+                    b.Property<int[]>("SuitableSkinTypes")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
@@ -104,7 +110,8 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uuid");
@@ -127,7 +134,8 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -142,10 +150,14 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -159,6 +171,9 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SkinType")
                         .HasColumnType("integer");
@@ -175,11 +190,19 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GlowFlow.Core.Entities.SkincareIngredient", b =>
+            modelBuilder.Entity("SkincareIngredientSkincareProduct", b =>
                 {
-                    b.HasOne("GlowFlow.Core.Entities.SkincareProduct", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("SkincareProductId");
+                    b.Property<Guid>("IngredientsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("IngredientsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("SkincareIngredientSkincareProduct");
                 });
 
             modelBuilder.Entity("GlowFlow.Core.Entities.TestOption", b =>
@@ -193,9 +216,19 @@ namespace GlowFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("GlowFlow.Core.Entities.SkincareProduct", b =>
+            modelBuilder.Entity("SkincareIngredientSkincareProduct", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.HasOne("GlowFlow.Core.Entities.SkincareIngredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GlowFlow.Core.Entities.SkincareProduct", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GlowFlow.Core.Entities.TestQuestion", b =>

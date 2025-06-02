@@ -8,11 +8,14 @@ namespace GlowFlow.Core.Entities;
 [Index(nameof(Email), IsUnique = true)]
 public class User : BaseEntity
 {
+    [Required]
     public string Name { get; set; } = string.Empty;
     public int Age { get; set; }
+    [Required]
     public string Username { get; set; } = string.Empty;
     [Required, EmailAddress, StringLength(100)]
     public string Email { get; set; } = string.Empty;
+    [Required]
     public string PasswordHash { get; set; } = string.Empty;
     public SkinType SkinType { get; set; }
     public string? AvatarUrl { get; set; } = string.Empty;

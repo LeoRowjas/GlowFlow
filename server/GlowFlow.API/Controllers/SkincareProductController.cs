@@ -1,5 +1,6 @@
 ﻿using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
+using GlowFlow.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,8 @@ public class SkincareProductController : ControllerBase
     public async Task<IActionResult> GetAllSkincareProducts()
     {
         var products = await _skincareProductRepository.GetAllAsync();
-        return Ok(products);
+        var dtos = products.Select(SkincareProductMapper.ToDto);
+        return Ok(dtos);
     }
 
     [AllowAnonymous]
@@ -29,7 +31,8 @@ public class SkincareProductController : ControllerBase
     public async Task<IActionResult> GetSkincareProductById([FromRoute] Guid id)
     {
         var product = await _skincareProductRepository.GetByIdAsync(id);
-        return Ok(product);
+        var dto = SkincareProductMapper.ToDto(product);
+        return Ok(dto);
     }
 
     [AllowAnonymous]

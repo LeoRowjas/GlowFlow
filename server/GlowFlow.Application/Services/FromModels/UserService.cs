@@ -37,9 +37,15 @@ public class UserService : IUserService
         return await _repository.AddAsync(entity);
     }
 
-    Task<User> IService<User>.UpdateAsync(User entity)
+    async Task<User> IService<User>.UpdateAsync(User entity)
     {
-        throw new NotImplementedException();
+        var updateUser = new UpdateUserDto()
+        {
+            Age = entity.Age,
+            Email = entity.Email,
+            Name = entity.Name
+        };
+        return await UpdateAsync(entity.Id, updateUser);
     }
 
     public async Task<User> UpdateAsync(Guid id, UpdateUserDto entity)
