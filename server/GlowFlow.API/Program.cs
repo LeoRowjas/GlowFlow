@@ -84,8 +84,11 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<GlowFlowDbContext>();
-    db.Database.Migrate();
+    var dbContext = scope.ServiceProvider.GetRequiredService<GlowFlowDbContext>();
+    dbContext.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeedInitializer>>();
+    var initializer = new DataSeedInitializer(dbContext, logger);
+    await initializer.SeedDataAsync();
 }
 
 app.Run();

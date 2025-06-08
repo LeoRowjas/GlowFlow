@@ -30,7 +30,6 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./init-data:/docker-entrypoint-initdb.d
 
   minio:
     image: minio/minio:latest
@@ -43,15 +42,32 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio-data:/data
+
   minio-init:
     image: minio/mc
     depends_on:
       - minio
+    volumes:
+      - ./init-data/images:/images  # Монтируем папку с изображениями
     entrypoint: >
       /bin/sh -c "
-        sleep 5;
+        # Ждем, пока MinIO запустится
+        sleep 5
+
+        # Настраиваем подключение
         mc alias set myminio http://minio:9000 minioadmin minioadmin
-        mc mb myminio/avatars || true;
+
+        # Создаем бакеты и делаем их публичными
+        mc mb --ignore-existing myminio/articles
+        mc mb --ignore-existing myminio/products
+        mc mb --ignore-existing myminio/avatars
+        mc anonymous set download myminio/articles
+        mc anonymous set download myminio/products
+        mc anonymous set download myminio/avatars
+
+        # Копируем все файлы изображений сразу
+        mc cp /images/ar-*.jpg myminio/articles/ || true
+        mc cp /images/pr-*.jpg myminio/products/ || true
       "
 
 volumes:
