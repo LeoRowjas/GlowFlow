@@ -27,7 +27,7 @@ public class AuthService : IAuthService
             throw new Exception(); //TODO: прикрутить ошибку неправильных кредентиалс
         }
         
-        var token = _jwtService.GenerateJwtToken(user.Id, user.Email);
+        var token = _jwtService.GenerateJwtToken(user.Id, user.Email, user.Role);
         var response = new LoginResponseDto()
         {
             Email = user.Email,
@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
         
         await _userRepository.AddAsync(user);
-        var token = _jwtService.GenerateJwtToken(user.Id, user.Email);
+        var token = _jwtService.GenerateJwtToken(user.Id, user.Email, user.Role);
 
         return new LoginResponseDto()
         {

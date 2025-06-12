@@ -3,6 +3,7 @@ using GlowFlow.Infrastructure;
 using GlowFlow.Infrastructure.Persistence;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GlowFlow.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -63,7 +64,7 @@ builder.Services.AddDbContext<GlowFlowDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -72,11 +73,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<GlowFlowDbContext>();
+    dbContext.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeedInitializer>>();
+    var initializer = new DataSeedInitializer(dbContext, logger);
+    await initializer.SeedDataAsync();
+}
 
 app.Run();

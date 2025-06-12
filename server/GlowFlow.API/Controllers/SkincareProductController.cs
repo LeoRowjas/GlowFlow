@@ -1,13 +1,13 @@
-﻿using GlowFlow.Core.Entities;
-using GlowFlow.Core.Enums;
+﻿using GlowFlow.Core.Enums;
 using GlowFlow.Core.Interfaces.Repositories;
+using GlowFlow.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/products")]
 public class SkincareProductController : ControllerBase
 {
     private readonly ISkincareProductRepository _skincareProductRepository;
@@ -18,23 +18,25 @@ public class SkincareProductController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("all")]
+    [HttpGet("")]
     public async Task<IActionResult> GetAllSkincareProducts()
     {
         var products = await _skincareProductRepository.GetAllAsync();
-        return Ok(products);
+        var dtos = products.Select(SkincareProductMapper.ToDto);
+        return Ok(dtos);
     }
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetSkincareProductById([FromBody] string id)
+    public async Task<IActionResult> GetSkincareProductById([FromRoute] Guid id)
     {
-        var product = await _skincareProductRepository.GetByIdAsync(Guid.Parse(id));
-        return Ok(product);
+        var product = await _skincareProductRepository.GetByIdAsync(id);
+        var dto = SkincareProductMapper.ToDto(product);
+        return Ok(dto);
     }
 
     [AllowAnonymous]
-    [HttpGet("from-skin-type")]
+    [HttpGet("by-skin-type")]
     public async Task<IActionResult> GetSkincareProductBySkinType([FromQuery] SkinType skinType)
     {
         var products = await _skincareProductRepository.GetBySkinTypeAsync(skinType);

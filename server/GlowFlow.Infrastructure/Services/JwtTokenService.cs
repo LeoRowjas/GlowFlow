@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using GlowFlow.Application.Interfaces.Security;
+using GlowFlow.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -20,12 +21,13 @@ public class JwtTokenService : IJwtTokenService
         _audience = configuration["Jwt:Audience"];
     }
 
-    public string GenerateJwtToken(Guid userId, string email)
+    public string GenerateJwtToken(Guid userId, string email, UserRole role)
     {
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.Email, email)
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, role.ToString())
         };
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

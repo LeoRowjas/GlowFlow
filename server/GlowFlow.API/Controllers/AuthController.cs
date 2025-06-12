@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GlowFlow.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -18,7 +18,7 @@ public class AuthController : ControllerBase
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequestDto loginRequestDto)
+    public async Task<IActionResult> Login([FromBody]LoginRequestDto loginRequestDto)
     {
         var response = await _authService.LoginAsync(loginRequestDto);
         return Ok(response);
@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequestDto registrationRequest)
+    public async Task<IActionResult> Register([FromBody]RegisterRequestDto registrationRequest)
     {
         var response = await _authService.RegisterAsync(registrationRequest);
         return Ok(response);
