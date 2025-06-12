@@ -7,5 +7,5 @@ public class TestQuestion : BaseEntity
 {
     [Required]
     public string Text { get; set; } = string.Empty; 
-    public List<TestOption> Options { get; set; } = null!;
+    public List<TestOption> Options { get; set; } = new List<TestOption>();
 }

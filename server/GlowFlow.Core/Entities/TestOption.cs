@@ -11,6 +11,4 @@ public class TestOption : BaseEntity
     public string Text { get; set; } = string.Empty;
     public SkinType SkinType { get; set; }
     public Guid QuestionId { get; set; }
-    [Required]
-    public TestQuestion Question { get; set; } = null!; 
 }

@@ -6,5 +6,4 @@ public enum SkinType
     Dry,
     Oily,
     Combination,
-    Sensitive
 }
