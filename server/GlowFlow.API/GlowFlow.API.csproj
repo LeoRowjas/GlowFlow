@@ -34,4 +34,8 @@
       <ProjectReference Include="..\GlowFlow.Infrastructure\GlowFlow.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Helpers\" />
+    </ItemGroup>
+
 </Project>

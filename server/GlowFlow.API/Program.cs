@@ -7,6 +7,7 @@ using GlowFlow.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using GlowFlow.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,13 +83,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<GlowFlowDbContext>();
-    dbContext.Database.Migrate();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeedInitializer>>();
-    var initializer = new DataSeedInitializer(dbContext, logger);
-    await initializer.SeedDataAsync();
-}
+await DbMigrationHelper.MigrateAndSeedAsync(app.Services);
 
 app.Run();

@@ -18,22 +18,14 @@ public class DataSeedInitializer
 
     public async Task SeedDataAsync()
     {
-        // Проверяем наличие существующих данных
         if (!await _dbContext.Articles.AnyAsync() &&
             !await _dbContext.SkincareProducts.AnyAsync() &&
             !await _dbContext.SkincareIngredients.AnyAsync())
         {
             _logger.LogInformation("Начало заполнения базы данных тестовыми данными");
-
-            // Добавляем статьи
             await SeedArticlesAsync();
-
-            // Добавляем ингредиенты
             var ingredients = await SeedIngredientsAsync();
-
-            // Добавляем продукты с ингредиентами
             await SeedProductsAsync(ingredients);
-
             _logger.LogInformation("База данных успешно заполнена тестовыми данными");
         }
         else

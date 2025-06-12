@@ -31,6 +31,4 @@ public class ArticleController : ControllerBase
         if (article == null) return NotFound();
         return Ok(article);
     }
-    
-    //TODO: добавить метод с рекомендациями
 }
