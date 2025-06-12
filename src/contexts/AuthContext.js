@@ -4,6 +4,7 @@ const AuthContext = createContext(null);
 
 // Ключ для хранения пользователей в localStorage
 const USERS_KEY = 'users';
+const ADMIN_AUTH_KEY = 'adminAuth'; // Новый ключ для хранения статуса администратора
 
 function getUsersFromStorage() {
   const users = localStorage.getItem(USERS_KEY);
@@ -17,6 +18,7 @@ function saveUsersToStorage(users) {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false); // Новое состояние для аутентификации администратора
 
   useEffect(() => {
     // Проверяем наличие токена и пользователя в localStorage при загрузке
@@ -24,6 +26,12 @@ export const AuthProvider = ({ children }) => {
     const userData = localStorage.getItem('user');
     if (token && userData) {
       setUser(JSON.parse(userData));
+    }
+
+    // Проверяем статус администратора в localStorage
+    const adminAuth = localStorage.getItem(ADMIN_AUTH_KEY);
+    if (adminAuth === 'true') {
+      setIsAdminAuthenticated(true);
     }
     setLoading(false);
   }, []);
@@ -68,6 +76,26 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Новая функция для входа администратора
+  const adminLogin = async (password) => {
+    // В реальном приложении: использовать API для проверки пароля и получать токен
+    // Для демонстрации: просто сравнение с жестко заданным паролем
+    const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'admin123'; // Используйте переменные окружения!
+    if (password === ADMIN_PASSWORD) {
+      localStorage.setItem(ADMIN_AUTH_KEY, 'true');
+      setIsAdminAuthenticated(true);
+      return true;
+    } else {
+      throw new Error('Неверный пароль администратора');
+    }
+  };
+
+  // Новая функция для выхода администратора
+  const adminLogout = () => {
+    localStorage.removeItem(ADMIN_AUTH_KEY);
+    setIsAdminAuthenticated(false);
+  };
+
   const value = {
     user,
     loading,
@@ -76,6 +104,9 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: !!user,
     setUser,
+    isAdminAuthenticated, // Добавляем статус администратора в контекст
+    adminLogin,           // Добавляем функцию входа администратора
+    adminLogout,          // Добавляем функцию выхода администратора
   };
 
   return (
