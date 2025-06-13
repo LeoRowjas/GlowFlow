@@ -1,9 +1,11 @@
-﻿using GlowFlow.Core.Enums;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace GlowFlow.Application.DTO.SkinTest;
+namespace GlowFlow.Requests;
 
 public class SubmitSkinTestRequest
 {
-    public Guid UserId { get; set; }
-    public SkinType SkinType { get; set; }
+    [Required(ErrorMessage = "Ответы обязательны")]
+    [MinLength(20, ErrorMessage = "Тест должен содержать ровно 20 ответов")]
+    [MaxLength(20, ErrorMessage = "Тест должен содержать ровно 20 ответов")]
+    public List<Guid> OptionIds { get; set; } = new();
 }

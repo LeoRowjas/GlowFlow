@@ -24,17 +24,32 @@ public class TestService : ITestService
 
     public async Task<SkinType> GetSkinTypeFromAnswersAsync(List<Guid> answers)
     {
+        const int EXPECTED_ANSWERS = 20;
+    
+        if (answers == null || answers.Count == 0)
+            throw new ArgumentException("Список ответов не может быть пустым");
+
+        if (answers.Count != EXPECTED_ANSWERS)
+            throw new ArgumentException($"Ожидается ровно {EXPECTED_ANSWERS} ответов, получено: {answers.Count}");
+
         var skinTypeCounts = new Dictionary<SkinType, int>();
 
-        foreach (var id in answers)
+        foreach (var optionId in answers)
         {
-            var option = await _optionRepository.GetByIdAsync(id);
-            if (!skinTypeCounts.TryAdd(option.SkinType, 1))
-            {
-                skinTypeCounts[option.SkinType]++;
-            }
+            var option = await _optionRepository.GetByIdAsync(optionId);
+            if (option == null)
+                throw new ArgumentException($"Опция с ID {optionId} не найдена");
+
+            skinTypeCounts[option.SkinType] = skinTypeCounts.GetValueOrDefault(option.SkinType, 0) + 1;
         }
 
-        return skinTypeCounts.OrderByDescending(kv => kv.Value).First().Key;
+        if (skinTypeCounts.Count == 0)
+            throw new InvalidOperationException("Не удалось обработать ответы");
+        
+        return skinTypeCounts
+            .OrderByDescending(kv => kv.Value)
+            .ThenBy(kv => kv.Key) 
+            .First()
+            .Key;
     }
 }
