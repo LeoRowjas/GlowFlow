@@ -2,7 +2,7 @@
 
 namespace GlowFlow.Application.DTO.SkinTest;
 
-public class TestResultDto
+public class SubmitSkinTestRequest
 {
     public Guid UserId { get; set; }
     public SkinType SkinType { get; set; }
