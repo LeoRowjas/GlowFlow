@@ -1,3 +1,4 @@
+using GlowFlow.Application.Interfaces.Security;
 using GlowFlow.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,8 @@ namespace GlowFlow.Helpers
                     var dbContext = scope.ServiceProvider.GetRequiredService<GlowFlowDbContext>();
                     await dbContext.Database.MigrateAsync();
                     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeedInitializer>>();
-                    var initializer = new DataSeedInitializer(dbContext, logger);
+                    var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+                    var initializer = new DataSeedInitializer(dbContext, logger, passwordHasher);
                     await initializer.SeedDataAsync();
                     break;
                 }

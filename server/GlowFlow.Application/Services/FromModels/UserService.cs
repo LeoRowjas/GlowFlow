@@ -94,11 +94,27 @@ public class UserService : IUserService
         return url;
     }
 
-    public async Task DeleteAvatarAsync(Guid id, string fileName)
+    public async Task<bool> DeleteAvatarAsync(Guid id)
     {
         var user = await GetByIdAsync(id);
-        if (user == null) throw new NotFoundException("Пользователь не найден");
-        user.AvatarUrl = string.Empty;
-        await _fileStorageService.DeleteFileAsync(fileName);
+        if (user == null) 
+            throw new NotFoundException("Пользователь не найден");
+        if (string.IsNullOrEmpty(user.AvatarUrl))
+            return false; 
+        var avatarUrlToDelete = user.AvatarUrl;
+    
+        try
+        {
+            await _fileStorageService.DeleteFileAsync(avatarUrlToDelete);
+            user.AvatarUrl = string.Empty;
+            await _repository.UpdateAsync(user);
+        
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
     }
 }

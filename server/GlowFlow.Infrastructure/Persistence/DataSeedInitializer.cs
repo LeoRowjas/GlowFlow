@@ -1,3 +1,4 @@
+using GlowFlow.Application.Interfaces.Security;
 using GlowFlow.Core.Entities;
 using GlowFlow.Core.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,14 @@ public class DataSeedInitializer
 {
     private readonly GlowFlowDbContext _dbContext;
     private readonly ILogger<DataSeedInitializer> _logger;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public DataSeedInitializer(GlowFlowDbContext dbContext, ILogger<DataSeedInitializer> logger)
+    public DataSeedInitializer(GlowFlowDbContext dbContext, ILogger<DataSeedInitializer> logger,
+        IPasswordHasher passwordHasher)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task SeedDataAsync()
@@ -22,17 +26,17 @@ public class DataSeedInitializer
             !await _dbContext.SkincareProducts.AnyAsync() &&
             !await _dbContext.SkincareIngredients.AnyAsync())
         {
-            _logger.LogInformation("Начало заполнения базы данных тестовыми данными");
+            _logger.LogInformation("Начало заполнения базы данных тестовыми/статическими данными");
+            await SeedAdmin();
             await SeedArticlesAsync();
             var ingredients = await SeedIngredientsAsync();
             await SeedProductsAsync(ingredients);
             await SeedTestQuestionsAsync();
             await SeedTestOptionsAsync();
-            _logger.LogInformation("База данных успешно заполнена тестовыми данными");
+            _logger.LogInformation("База данных успешно заполнена тестовыми/статическими данными");
         }
         else
         {
-            // Если вопросы есть, но опций нет, досоздать опции
             if (await _dbContext.TestQuestions.AnyAsync() && !await _dbContext.TestOptions.AnyAsync())
             {
                 await SeedTestOptionsAsync();
@@ -41,6 +45,29 @@ public class DataSeedInitializer
         }
     }
 
+    private async Task SeedAdmin()
+    {
+        if (await _dbContext.Users.AnyAsync(u => u.Role == UserRole.Admin))
+        {
+            _logger.LogInformation("Админ уже есть, пропускаем");
+            return;
+        }
+
+        var admin = new User()
+        {
+            Age = 20,
+            Name = "Admin",
+            Username = "Admin",
+            Email = "admin@admin.com",
+            SkinType = SkinType.Normal,
+            Role = UserRole.Admin
+        };
+        admin.PasswordHash = _passwordHasher.HashPassword(admin, "Admin123");
+        
+        await _dbContext.Users.AddAsync(admin);
+        await _dbContext.SaveChangesAsync();
+    }
+    
     private async Task SeedArticlesAsync()
     {
         var articles = new List<Article>

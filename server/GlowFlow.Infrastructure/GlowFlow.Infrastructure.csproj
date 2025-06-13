@@ -25,4 +25,8 @@
       <ProjectReference Include="..\GlowFlow.Core\GlowFlow.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Persistence\Migrations\" />
+    </ItemGroup>
+
 </Project>

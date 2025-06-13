@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GlowFlow.DTO;
+namespace GlowFlow.Requests;
 
 public class UploadAvatarRequest
 {
     [Required]
-    public IFormFile File { get; set; } = null!;
+    public IFormFile File { get; set; } 
 }

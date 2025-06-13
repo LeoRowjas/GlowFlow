@@ -11,5 +11,5 @@ public interface IUserService : IService<User>
     Task<User> GetByEmailAsync(string email);
     Task<User> UpdateSkinTypeAsync(Guid id, SkinType skinType);
     Task<string> UploadAvatarAsync(Guid id, Stream stream, string fileName, string contentType);
-    Task DeleteAvatarAsync(Guid id, string filename);
+    Task<bool> DeleteAvatarAsync(Guid id);
 }

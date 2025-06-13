@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GlowFlow.Infrastructure.Migrations
+namespace GlowFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GlowFlowDbContext))]
     partial class GlowFlowDbContextModelSnapshot : ModelSnapshot
@@ -116,16 +116,13 @@ namespace GlowFlow.Infrastructure.Migrations
                     b.Property<int>("SkinType")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("TestQuestionId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestQuestionId");
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("TestOptions");
                 });
@@ -207,9 +204,13 @@ namespace GlowFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("GlowFlow.Core.Entities.TestOption", b =>
                 {
-                    b.HasOne("GlowFlow.Core.Entities.TestQuestion", null)
+                    b.HasOne("GlowFlow.Core.Entities.TestQuestion", "Question")
                         .WithMany("Options")
-                        .HasForeignKey("TestQuestionId");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("SkincareIngredientSkincareProduct", b =>
