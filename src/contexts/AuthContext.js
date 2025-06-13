@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+// import apiClient from '../api/apiClient'; // Закомментируем или удалим импорт apiClient
 
 const AuthContext = createContext(null);
 
@@ -18,11 +19,11 @@ function saveUsersToStorage(users) {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false); // Новое состояние для аутентификации администратора
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   useEffect(() => {
     // Проверяем наличие токена и пользователя в localStorage при загрузке
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // Вернули на 'token'
     const userData = localStorage.getItem('user');
     if (token && userData) {
       setUser(JSON.parse(userData));
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     const users = getUsersFromStorage();
     const found = users.find(u => u.email === email && u.password === password);
     if (!found) throw new Error('Неверный email или пароль');
-    localStorage.setItem('token', 'mock-token');
+    localStorage.setItem('token', 'mock-token'); // Вернули на 'token'
     localStorage.setItem('user', JSON.stringify(found));
     setUser(found);
     return found;
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); // Вернули на 'token'
     localStorage.removeItem('user');
     setUser(null);
   };

@@ -30,9 +30,9 @@ const MainLayout = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
-            <Route path="login" element={<AdminLogin />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="articles" element={<ArticlesPage />} />
             <Route path="skincare-products" element={<SkincareProductsPage />} />

@@ -2,18 +2,24 @@ import React, { useState, useEffect } from 'react';
 
 const IngredientFormModal = ({ ingredientData, onClose, onSubmit }) => {
   const [name, setName] = useState('');
+  const [effect, setEffect] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
     if (ingredientData) {
       setName(ingredientData.name);
+      setEffect(ingredientData.effect || '');
+      setImageUrl(ingredientData.imageUrl || '');
     } else {
       setName('');
+      setEffect('');
+      setImageUrl('');
     }
   }, [ingredientData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { name };
+    const data = { name, effect, imageUrl };
     if (ingredientData) {
       onSubmit({ ...ingredientData, ...data });
     } else {
@@ -35,6 +41,14 @@ const IngredientFormModal = ({ ingredientData, onClose, onSubmit }) => {
           <div className="mb-4">
             <label htmlFor="ingredientName" className="block text-gray-700 text-sm font-bold mb-2">Название <span className="text-red-500">*</span></label>
             <input type="text" id="ingredientName" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-50" placeholder="Введите название ингредиента" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="ingredientEffect" className="block text-gray-700 text-sm font-bold mb-2">Эффект</label>
+            <textarea id="ingredientEffect" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-50" placeholder="Введите эффект ингредиента" value={effect} onChange={(e) => setEffect(e.target.value)} rows="3"></textarea>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="ingredientImage" className="block text-gray-700 text-sm font-bold mb-2">Изображение (URL)</label>
+            <input type="url" id="ingredientImage" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-50" placeholder="Введите URL изображения" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
           </div>
           
           <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-6">

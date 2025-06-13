@@ -41,12 +41,14 @@ const SkincareProductFormModal = ({ productData, onClose, onSubmit }) => {
 
   useEffect(() => {
     const loadSuggestions = async () => {
-      if (ingredientSearchQuery.length > 1) { // Начинаем поиск после 2 символов
+      // Начинаем поиск после 1 символа, чтобы обеспечить фильтрацию по каждой вводимой букве
+      if (ingredientSearchQuery.length >= 1) { 
         try {
           const suggestions = await fetchIngredients(ingredientSearchQuery);
-          // Фильтруем уже выбранные ингредиенты
+          // Фильтруем уже выбранные ингредиенты и отображаем только те, которые соответствуют запросу
           setIngredientSuggestions(suggestions.filter(sug => 
-            !selectedIngredients.some(sel => sel.id === sug.id)
+            !selectedIngredients.some(sel => sel.id === sug.id) && 
+            sug.name.toLowerCase().includes(ingredientSearchQuery.toLowerCase())
           ));
         } catch (error) {
           console.error('Ошибка загрузки ингредиентов:', error);
@@ -56,7 +58,14 @@ const SkincareProductFormModal = ({ productData, onClose, onSubmit }) => {
         setIngredientSuggestions([]);
       }
     };
-    loadSuggestions();
+    // Задержка для предотвращения слишком частых запросов при вводе
+    const handler = setTimeout(() => {
+      loadSuggestions();
+    }, 300); // Задержка 300 мс
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [ingredientSearchQuery, selectedIngredients]);
 
   const handleSkinTypeChange = (e) => {
@@ -150,7 +159,7 @@ const SkincareProductFormModal = ({ productData, onClose, onSubmit }) => {
                 value={ingredientSearchQuery}
                 onChange={(e) => setIngredientSearchQuery(e.target.value)}
               />
-              {ingredientSuggestions.length > 0 && ingredientSearchQuery.length > 1 && (
+              {ingredientSuggestions.length > 0 && ingredientSearchQuery.length >= 1 && ( // Изменено условие показа
                 <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 max-h-48 overflow-y-auto">
                   {ingredientSuggestions.map((ing) => (
                     <li
