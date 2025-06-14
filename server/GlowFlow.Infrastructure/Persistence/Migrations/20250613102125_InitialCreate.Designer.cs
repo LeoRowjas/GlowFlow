@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GlowFlow.Infrastructure.Migrations
+namespace GlowFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GlowFlowDbContext))]
-    [Migration("20250602141757_InitialCreate")]
+    [Migration("20250613102125_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

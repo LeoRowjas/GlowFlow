@@ -1,4 +1,5 @@
 ﻿using GlowFlow.Application.Interfaces;
+using GlowFlow.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,25 +10,40 @@ namespace GlowFlow.Controllers;
 public class SkinTestController : ControllerBase
 {
     private readonly ITestService _testService;
+    private const int REQUIRED_ANSWERS_COUNT = 20;
 
     public SkinTestController(ITestService testService)
     {
         _testService = testService;
     }
-
+    
     [Authorize]
     [HttpGet("questions")]
-    public async Task<IActionResult> GetQuestionsWithOptionsAsync()
+    public async Task<IActionResult> GetQuestionsWithOptions()
     {
         var questions = await _testService.GetTestQuestionsWithOptionsAsync();
         return Ok(questions);
     }
-
+    
     [Authorize]
     [HttpPost("submit")]
-    public async Task<IActionResult> SubmitTestAsync([FromBody]List<Guid> optionsId)
+    public async Task<IActionResult> SubmitTest([FromBody] SubmitSkinTestRequest request)
     {
-        var result = await _testService.GetSkinTypeFromAnswersAsync(optionsId);
-        return Ok(result);
+        try
+        {
+            var skinType = await _testService.GetSkinTypeFromAnswersAsync(request.OptionIds);
+        
+            return Ok(new 
+            { 
+                SkinType = skinType,
+                AnswersCount = request.OptionIds.Count,
+                CompletedAt = DateTime.UtcNow
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
+
 }

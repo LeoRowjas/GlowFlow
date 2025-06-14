@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GlowFlow.Infrastructure.Migrations
+namespace GlowFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GlowFlowDbContext))]
     partial class GlowFlowDbContextModelSnapshot : ModelSnapshot

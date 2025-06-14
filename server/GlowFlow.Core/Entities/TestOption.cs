@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using GlowFlow.Core.Entities.Base;
 using GlowFlow.Core.Enums;
 
@@ -11,6 +12,7 @@ public class TestOption : BaseEntity
     public string Text { get; set; } = string.Empty;
     public SkinType SkinType { get; set; }
     public Guid QuestionId { get; set; }
-    [Required]
-    public TestQuestion Question { get; set; } = null!; 
+    
+    [JsonIgnore]
+    public TestQuestion Question { get; set; } = null!;
 }
