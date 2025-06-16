@@ -51,12 +51,67 @@ const mockArticles = [
     tags: ["Гиалуроновая кислота", "Увлажнение"],
     img: "https://via.placeholder.com/600x400?text=600+x+400",
   },
+  {
+    id: 7,
+    title: "Витамин С: преимущества для кожи",
+    description: "Всё о мощном антиоксиданте и его роли в уходе.",
+    date: "28 мая",
+    tags: ["Витамины", "Антиоксиданты"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
+  {
+    id: 8,
+    title: "Основы ухода за жирной кожей",
+    description: "Советы по контролю блеска и предотвращению высыпаний.",
+    date: "1 июня",
+    tags: ["Жирная кожа", "Уход"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
+  {
+    id: 9,
+    title: "Пептиды в косметологии: что это и как работают",
+    description: "Разбираемся в одном из самых перспективных ингредиентов.",
+    date: "3 июня",
+    tags: ["Пептиды", "Анти-эйдж"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
+  {
+    id: 10,
+    title: "Как выбрать идеальную сыворотку",
+    description: "Гайд по подбору активных средств для решения проблем кожи.",
+    date: "5 июня",
+    tags: ["Сыворотки", "Уход"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
+  {
+    id: 11,
+    title: "Бактерии на коже: хорошие и плохие",
+    description: "Всё о микробиоме кожи и его балансе.",
+    date: "8 июня",
+    tags: ["Микробиом", "Здоровье кожи"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
+  {
+    id: 12,
+    title: "Увлажнение изнутри: роль воды и питания",
+    description: "Как образ жизни влияет на уровень увлажненности кожи.",
+    date: "10 июня",
+    tags: ["Увлажнение", "Питание"],
+    img: "https://via.placeholder.com/600x400?text=600+x+400",
+  },
   // ... можно добавить больше статей для теста скролла
 ];
 
 const allTags = Array.from(
   new Set(mockArticles.flatMap((a) => a.tags))
 );
+
+const recommendedArticles = [
+  { title: "Топ-5 компонентов для борьбы с пигментацией", duration: "8 мин" },
+  { title: "Как подобрать крем для глаз", duration: "6 мин" },
+  { title: "Мифы об уходе за кожей", duration: "10 мин" },
+  { title: "Правила нанесения средств", duration: "7 мин" },
+];
 
 const PAGE_SIZE = 3;
 
@@ -66,8 +121,28 @@ export default function Articles() {
   const [page, setPage] = useState(1);
   const [selectedTags, setSelectedTags] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const loaderRef = useRef(null);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem('isLoggedIn');
+    if (loggedInStatus === 'true') {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+
+    const handleStorageChange = () => {
+      const newLoggedInStatus = localStorage.getItem('isLoggedIn');
+      setIsLoggedIn(newLoggedInStatus === 'true');
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   // Фильтрация статей по тегам
   const filteredArticles = selectedTags.length
@@ -200,11 +275,22 @@ export default function Articles() {
         {/* Боковой блок */}
         <div className="w-[320px] flex-shrink-0">
           <div className="bg-white rounded-2xl shadow p-6 mb-6">
-            <h3 className="text-lg font-bold mb-2">Рекомендуемые статьи</h3>
-            <div className="text-gray-500 text-base mb-2">
-              Чтобы получить персонально подобранные статьи вам нужно{' '}
-              <Link to="/login" className="text-violet-600 hover:underline font-semibold">войти в аккаунт</Link>.
-            </div>
+            <h3 className="text-lg font-bold mb-4">Рекомендуемые статьи</h3>
+            {isLoggedIn ? (
+              <ul className="space-y-4">
+                {recommendedArticles.map((rec, index) => (
+                  <li key={index} className="flex justify-between items-center">
+                    <span className="text-gray-700 text-base">{rec.title}</span>
+                    <span className="text-gray-500 text-sm">{rec.duration}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-gray-500 text-base mb-2">
+                Чтобы получить персонально подобранные статьи вам нужно{' '}
+                <Link to="/login" className="text-violet-600 hover:underline font-semibold">войти в аккаунт</Link>.
+              </div>
+            )}
           </div>
         </div>
       </div>

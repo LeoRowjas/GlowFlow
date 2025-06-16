@@ -1,32 +1,28 @@
 import React, { useState } from "react";
-
-// Моковые данные товара (в будущем будут приходить с бэка)
-const mockProduct = {
-  id: 1,
-  title: "Увлажняющий крем La Roche-Posay",
-  description: "Лёгкий крем с гиалуроновой кислотой",
-  image: "https://via.placeholder.com/500x500?text=500+x+500",
-  isFavorite: false,
-  ingredients: [
-    { name: "Гиалуроновая кислота", link: "#" },
-    { name: "Термальная вода La Roche-Posay", link: "#" },
-    { name: "Глицерин", link: "#" },
-    { name: "Масло ши", link: "#" },
-    { name: "Ниацинамид", link: "#" },
-    { name: "Церамиды", link: "#" },
-  ],
-  characteristics: [
-    { label: "Объём", value: "50 мл" },
-    { label: "Тип кожи", value: "Комбинированная, чувствительная" },
-    { label: "Страна", value: "Франция" },
-  ],
-};
+import { useParams } from "react-router-dom";
+import { products } from "../data/products"; // Импортируем данные продуктов
 
 const TABS = ["Описание", "Состав", "Характеристики"];
 
 export default function Product() {
-  const [activeTab, setActiveTab] = useState("Состав");
-  const [isFavorite, setIsFavorite] = useState(mockProduct.isFavorite);
+  const { id } = useParams(); // Получаем id продукта из URL
+  const productId = parseInt(id, 10); // Преобразуем id в число
+
+  const product = products.find((p) => p.id === productId); // Ищем продукт по id
+
+  const [activeTab, setActiveTab] = useState("Описание"); // Устанавливаем вкладку "Описание" по умолчанию
+  const [isFavorite, setIsFavorite] = useState(product ? product.isFavorite : false);
+
+  // Если продукт не найден, можно отобразить сообщение об ошибке или перенаправить
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-gray-100 py-12 px-6 flex items-center justify-center">
+        <div className="text-center text-2xl font-bold text-gray-700">
+          Продукт не найден.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8F6FF] py-12 px-6">
@@ -34,8 +30,8 @@ export default function Product() {
         {/* Левая часть — изображение */}
         <div className="w-[800px] flex-shrink-0 flex items-center justify-center">
           <img
-            src={mockProduct.image}
-            alt={mockProduct.title}
+            src={product.image}
+            alt={product.title}
             className="rounded-xl object-cover w-[760px] h-[760px] bg-gray-200"
             style={{ maxHeight: '90vh', maxWidth: '100%' }}
           />
@@ -46,7 +42,7 @@ export default function Product() {
           <div className="mb-8">
             <div className="flex items-start gap-4 mb-4">
               <h1 className="text-4xl font-bold mr-4">
-                {mockProduct.title}
+                {product.title}
               </h1>
               <button
                 className="ml-4 text-violet-500 hover:text-violet-700 text-3xl focus:outline-none"
@@ -56,7 +52,7 @@ export default function Product() {
                 {isFavorite ? "♥" : "♡"}
               </button>
             </div>
-            <div className="text-gray-600 text-2xl">{mockProduct.description}</div>
+            <div className="text-gray-600 text-2xl">{product.description}</div>
           </div>
           {/* Табы и их содержимое */}
           <div className="flex flex-col flex-1">
@@ -81,13 +77,13 @@ export default function Product() {
               style={{ position: 'relative' }}
             >
               {activeTab === "Описание" && (
-                <div className="text-gray-700 text-2xl">{mockProduct.description}</div>
+                <div className="text-gray-700 text-2xl">{product.descriptionFull}</div>
               )}
               {activeTab === "Состав" && (
                 <div>
                   <div className="text-gray-700 font-bold mb-4 text-2xl">Активные ингредиенты</div>
                   <ul className="list-disc pl-8 space-y-2">
-                    {mockProduct.ingredients.map((ing, idx) => (
+                    {product.ingredients.map((ing, idx) => (
                       <li key={idx}>
                         <a
                           href={ing.link}
@@ -104,7 +100,7 @@ export default function Product() {
               )}
               {activeTab === "Характеристики" && (
                 <div className="space-y-4">
-                  {mockProduct.characteristics.map((char, idx) => (
+                  {product.characteristics.map((char, idx) => (
                     <div key={idx} className="flex gap-4 text-gray-700 text-2xl">
                       <span className="font-bold w-60">{char.label}:</span>
                       <span>{char.value}</span>
