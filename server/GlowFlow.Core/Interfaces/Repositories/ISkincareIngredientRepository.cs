@@ -5,5 +5,5 @@ namespace GlowFlow.Core.Interfaces.Repositories;
 
 public interface ISkincareIngredientRepository : IRepository<SkincareIngredient>
 {
-    
+    Task<IEnumerable<SkincareIngredient>> SearchByNameAsync(string name);
 }
